@@ -1,3 +1,15 @@
 logs/
 saved_models/
 data/
+data_/
+gitclones/
+
+**/.ipynb_checkpoints/
+**/checkpoints/
+
+core.*
+*.csv
+*.xlsx
+
+.vscode/
+
