@@ -39,8 +39,7 @@ CFG_RESNET50 = {
                                           'hold_base_rate_steps' : 1} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : False}
+        "metrics": [""]
     },
     "model": {
         "name" : 'RESNET50'
@@ -62,20 +61,19 @@ CFG_RESNET50V2 = {
         "num_classes": 57,
     },
     "train": {
-        "batch_size": 22,
+        "batch_size": 16,
         "epochs": 30,
-        "opt_lr" : 0.0004,
-        "fine_tune_at": 20,
-        'dropout' : 0.0,
+        "opt_lr" : 0.0002,
+        "fine_tune_at": 0,
+        'dropout' : 0.2,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay', #cosine_learning_rate_decay
-                              'params' : {'warmup_epoch' : 4,
-                                          'hold_base_rate_steps' : 1} 
+                              'params' : {'warmup_epoch' : 6,
+                                          'hold_base_rate_steps' : 2} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : False}
+        "metrics": [""]
     },
     "model": {
         "name" : 'RESNET50V2'
@@ -111,18 +109,17 @@ CFG_RESNET152 = {
     "train": {
         "batch_size": 16,
         "epochs": 50,
-        "opt_lr" : 0.0008,
-        "fine_tune_at": 80,
+        "opt_lr" : 0.001,
+        "fine_tune_at": 350,
         'dropout' : 0.0,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',
-                              'params' : {'warmup_epoch' : 4,
+                              'params' : {'warmup_epoch' : 2,
                                           'hold_base_rate_steps' : 1} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : True}
+        "metrics": [""]
     },
     "model": {
         "name" : 'RESNET152V2' #      RESNET50  |  RESNET152V2  |  RESNET50V2
@@ -154,8 +151,7 @@ CFG_VGG16 = {
                                           'hold_base_rate_steps' : 0} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : True}
+        "metrics": [""]
     },
     "model": {
         "name" : 'VGG16'
@@ -188,8 +184,7 @@ CFG_EfficientNet = {
                                           'hold_base_rate_steps' : 2} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : True}
+        "metrics": [""]
     },
     "model": {
         "name" : 'EfficientNetB7'
@@ -211,9 +206,9 @@ CFG_DENSE201 = {
     "train": {
         "batch_size": 16,
         "epochs": 30,
-        "opt_lr" : 0.0004,
+        "opt_lr" : 0.001,
         "fine_tune_at": 200,   
-        'dropout' : 0.0,
+        'dropout' : 0.3,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
@@ -221,8 +216,7 @@ CFG_DENSE201 = {
                                           'hold_base_rate_steps' : 2} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : False}
+        "metrics": [""]
     },
     "model": {
         "name" : 'DenseNet201'
@@ -251,8 +245,7 @@ CFG_DENSE121 = {
                                           'hold_base_rate_steps' : 2} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : False}
+        "metrics": [""]
     },
     "model": {
         "name" : 'DenseNet121'
@@ -279,8 +272,7 @@ CFG_NASNET = {
                                           'hold_base_rate_steps' : 2} 
                              }
         },
-        "metrics": [""],
-        'data_augmentation' : {'mixup' : True}
+        "metrics": [""]
     },
     "model": {
         "name" : 'NASNetLarge'

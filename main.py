@@ -4,7 +4,7 @@ main.py
 
 python main.py --backbone 'densenet121' --category "milk" --save False --desc '339_cls_TEST'
 
-python main.py --backbone 'densenet201' --category "by_category" --save True --desc 'by_category_added_more_data'
+python main.py --backbone 'densenet201' --category "by_category" --save False --desc 'by_category_added_more_data'
 
 downloaded models :: 
 'resnet50'
@@ -86,8 +86,12 @@ def train(model, cat , config, name_tag, save):
     # if save:
     #     path_to_save_model = pathlib.Path((config['data']['path_to_model']))/ cat/ model.base_model.name /name_tag   # save model history
 
-    d = datetime.datetime.today().strftime('%H%M%S')
-    with open(f'/workspace/detect-me/product_classifier/saved_models/{cat}/{model.base_model.name}_{d}.json',
+    # d = datetime.datetime.today().strftime('%H%M%S')
+    p = f'/workspace/detect-me/product_classifier/saved_models/{cat}/test_result/'
+    if not os.path.exists(p):
+        os.mkdir(p)
+    with open(os.path.join(p ,
+                           f'{model.base_model.name}_{name_tag}.json'),
               'w') as writer:
         json.dump(test_r,
                   writer,
@@ -255,7 +259,7 @@ def main(args=None):
     epochs = train_config['train']['epochs']
     dropout = train_config['train']['dropout']
     base_model_name = train_config['model']['name']
-    data_augmentation = '___'.join([f'{k}-{v}' for k,v in train_config['train']['data_augmentation'].items()])
+    # data_augmentation = '___'.join([f'{k}-{v}' for k,v in train_config['train']['data_augmentation'].items()])
 
     
     time = datetime.datetime.utcnow() + datetime.timedelta(hours=4, minutes=30)
@@ -263,7 +267,7 @@ def main(args=None):
 
     desc = f"{desc}__{timest}"
     
-    model_nametag = f'{base_model_name}---(Freeze-{freeze_up_to})-(lr-{lr}-{optimizer})-(opt_cb-{optimizer__callback})-(epoch-{epochs})-(batch-{batchs})-(dropout-{dropout})-{data_augmentation}-{desc}'
+    model_nametag = f'{base_model_name}---(Freeze-{freeze_up_to})-(lr-{lr}-{optimizer})-(opt_cb-{optimizer__callback})-(epoch-{epochs})-(batch-{batchs})-(dropout-{dropout})-{desc}'
     
     train(base_model,
           cat,
