@@ -20,6 +20,6 @@ core.*
 
 .vscode/
 
-notebooks/
-!notebooks/*.ipynb
+# notebooks/
+# !notebooks/*.ipynb
 
