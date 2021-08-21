@@ -3,10 +3,10 @@ saved_models/
 data/
 data_/
 gitclones/
-notebooks/
 notebooks copy/
+**/__pycache__/**
 
-classifier.code-workspace
+*.code-workspace
 
 **/.ipynb_checkpoints/
 **/checkpoints/
@@ -16,7 +16,10 @@ core.*
 *.xlsx
 *.json
 *.txt
+*.pyc
 
 .vscode/
-!notebooks/*.ipynb
+
+notebooks/
+#!notebooks/*.ipynb
 

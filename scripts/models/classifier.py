@@ -1,23 +1,17 @@
 from scripts.models.basemodel import BaseModel
 from scripts.utils import image_pp, data_loader
-from scripts.utils import image_pp, data_loader
 from scripts.utils import callbacks as callb
 
 import os
-import re
 import pathlib
 import json
 import h5py
 
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 import pandas as pd
 
-import keras
-
 import tensorflow as tf
-import tensorflow_addons as tfa
 from tensorflow.keras.preprocessing import image_dataset_from_directory
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import regularizers
@@ -35,7 +29,6 @@ from tensorflow.keras.applications.nasnet import preprocess_input as preprocess_
 from tensorflow.keras.applications.vgg16 import preprocess_input as preprocess_input_vgg16
 from tensorflow.keras.applications.inception_resnet_v2 import preprocess_input as preprocess_input_inception_res_v2
 
-from keras.applications.resnet50 import ResNet50
 
 
 
@@ -90,38 +83,21 @@ class Classifier(BaseModel):
         print(f'data_path_ ::\n{self.path_to_data}')
         print('init_done')
 
-    # @staticmethod
-    # def data_augment(inputs):
-    #     data_augmentation = keras.Sequential(
-    #         [
-    #             #                   tf.keras.layers.experimental.preprocessing.RandomFlip('horizontal'),
-    #             #                 tf.keras.layers.experimental.preprocessing.RandomFlip('vertical'),
-    #             # tf.keras.layers.experimental.preprocessing.RandomRotation(0.1),
-    #             # tf.keras.layers.experimental.preprocessing.RandomContrast(0.5),
-    #             #                   tf.keras.layers.experimental.preprocessing.RandomZoom(0.4),
-    #             # tf.keras.layers.experimental.preprocessing.RandomTranslation(
-    #                 # height_factor=0.2, width_factor=0.2),
-    #             image_pp.RandomCutout((220, 40)),
-    #             #           tf.keras.layers.experimental.preprocessing.RandomCrop(224,224,),
-    #             #         tf.keras.layers.experimental.preprocessing.Rescaling(),
-    #         ]
-    #     )
-    #     return data_augmentation(inputs)
-   
 
     def load_data(self):
         self.dataset = data_loader.load_data_flow_from_dataframe(
             self.path_to_data,
             target_image_size=self.image_size,
             batch_size=self.batch_size,
-            # load_with_mixup_generator=bool(self.data_augmentation_options.mixup)
             )
 
         try:
             assert set(['train', 'test', 'samples', 'class_indices']).issubset(self.dataset.keys())
         except AssertionError:
             print('dictionary loaded from util/dataloader is different')
-    # build %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
     def build(self):
         
         num_classes = self.dataset.get('num_classes')
@@ -194,7 +170,7 @@ class Classifier(BaseModel):
         self.model = tf.keras.Model(inputs, outputs)
 
         return
-    # compile %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
 
     def compile(self, fine_tune_at : int, lr):
         self.base_model.trainable = True
@@ -258,14 +234,13 @@ class Classifier(BaseModel):
         print(['*']*100)
         print(self.model.optimizer.get_config())
         print(['*']*100)
-    # train %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     def train(self,
               save=False,
               epochs=None,
               save_name='no_name',
               initial_epoch=0,
               verbose=1,
-            #   train_info=None
               ):
 
         epochs = epochs if epochs else self.epochs
@@ -282,7 +257,6 @@ class Classifier(BaseModel):
                                  steps_per_epoch=self.dataset['samples'] // self.batch_size,
                                  validation_steps = self.dataset['validation'].samples // self.batch_size,
                                  workers=4,
-                                #  use_multiprocessing=True
                                  )
 
         if save:
@@ -303,18 +277,10 @@ class Classifier(BaseModel):
             train_info = pd.DataFrame(counts).T
             train_info.to_csv(DIR /'train_info.csv')
             
-            # if train_info is not None:
-            #     train_info.to_csv(DIR /'train_info.csv')
-                
-    #             def get_traindata_info(model):
-    # train_labels = model.dataset['train'].labels
-    # counts = np.unique(train_labels, return_counts=True)
-    # return pd.DataFrame(counts).T
-
 
 
         return history
-    # evaluate %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
     def evaluate(self, test_data):
         return self.model.evaluate(
@@ -329,11 +295,11 @@ class Classifier(BaseModel):
             use_multiprocessing=False,
             return_dict=True,
         )
-    # predict %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
     def predict(self, image):
         return self.model.predict(image)
-    # callbacks %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
     def callbacks(self,):

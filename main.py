@@ -4,7 +4,7 @@ main.py
 
 # TODO  add efficientnetb6
 
-python main.py --backbone 'resnet152v2' --category "by_category" --save False --desc 'WHY RES 152 not working'
+python main.py --backbone 'densenet121' --category "by_category" --save True --desc 'FREEZE_0'
 
 downloaded models :: 
 'resnet50'
@@ -35,26 +35,17 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 def parse_args(args):
     """ Parse the arguments.
     """
-    parser     = argparse.ArgumentParser(description='Simple training script for training a RetinaNet network.')
+    parser     = argparse.ArgumentParser(description='train and save classifier .. data should be in ./data/category/milk/id/0.jpg ')
     parser.add_argument('--backbone',     help='Backbone model used', default='resnet50', type=str)
-    parser.add_argument('--category',     help='which category milk , yogurt .. or by_category', default='milk', type=str)
+    parser.add_argument('--category',     help='which category milk , yogurt .. or by_category', default='by_category', type=str)
     parser.add_argument('--save',         help='save.', default=False, type=bool)
     parser.add_argument('--desc',         help='description to save model and tensorboad logs .', default='untitled', type=str)
 
     return parser.parse_args(args)
 
-
-# def get_traindata_info(model):
-#     train_labels = model.dataset['train'].labels
-#     counts = np.unique(train_labels, return_counts=True)
-#     return pd.DataFrame(counts).T
-
-
-
 def train(model, cat , config, name_tag, save):
     """Builds model, loads data, trains and evaluates"""
     model = Classifier(cat = cat,
-    # config =CFG_RESNET,
                      config =config,
                      base_model = model,
                      name_tensorboard=name_tag,
@@ -65,7 +56,6 @@ def train(model, cat , config, name_tag, save):
 
     
     model.load_data()
-    # train_info = get_traindata_info(model)
     model.build()
     model.compile(fine_tune_at=model.fine_tune_at,
                             lr=model.lr)
@@ -73,21 +63,17 @@ def train(model, cat , config, name_tag, save):
 
     history = model.train(save=save,
                           save_name=name_tag,
-                        #   train_info=train_info
                           )
     
 
     number_of_epochs_it_ran = len(history.history['loss'])
-    #TODO save result 
+
     print('________________________________________________________________________')
     print('____________________eval on test set____________________________________')
     test_r = model.evaluate(model.dataset['test'])
     print('________________________________________________________________________')
     
-    # if save:
-    #     path_to_save_model = pathlib.Path((config['data']['path_to_model']))/ cat/ model.base_model.name /name_tag   # save model history
 
-    # d = datetime.datetime.today().strftime('%H%M%S')
     p = f'/workspace/detect-me/product_classifier/saved_models/{cat}/test_result/'
     if not os.path.exists(p):
         os.mkdir(p)
@@ -99,57 +85,35 @@ def train(model, cat , config, name_tag, save):
                   indent=4)
 
 def finetune():
-    model = Classifier(cat = 'milk',
-                    config =CFG_RESNET,
-                    name_tensorboard=model_nametag,
-                    base_model = base_model)
-    model.load_data()
+    pass
+    # model = Classifier(cat = 'milk',
+    #                 config =CFG_RESNET,
+    #                 name_tensorboard=model_nametag,
+    #                 base_model = base_model)
+    # model.load_data()
 
     
-    model.build()
-    ##
-    model.compile(fine_tune_at=1000, lr=0.008)
-    history = model.train(epochs = 6, save=False,)
-    ##
-    model.compile(fine_tune_at=120, lr=0.0001)
-    history1 = model.train(save=False,
-                    save_name=model_nametag,
-                    initial_epoch=history.epoch[-1],
-                    epochs=12)
-    ##
-    model.compile(fine_tune_at=50, lr=0.0008)
-    history2 = model.train(save=True,
-                    save_name=model_nametag,
-                    initial_epoch=history1.epoch[-1],
-                    epochs=22)
+    # model.build()
+    # ##
+    # model.compile(fine_tune_at=1000, lr=0.008)
+    # history = model.train(epochs = 6, save=False,)
+    # ##
+    # model.compile(fine_tune_at=120, lr=0.0001)
+    # history1 = model.train(save=False,
+    #                 save_name=model_nametag,
+    #                 initial_epoch=history.epoch[-1],
+    #                 epochs=12)
+    # ##
+    # model.compile(fine_tune_at=50, lr=0.0008)
+    # history2 = model.train(save=True,
+    #                 save_name=model_nametag,
+    #                 initial_epoch=history1.epoch[-1],
+    #                 epochs=22)
 
-    print(history2.history.keys()) 
+    # print(history2.history.keys()) 
 
 def test(cat):
-    base_model = tf.keras.applications.ResNet50(
-                             include_top=False,
-                             weights="imagenet",
-                             input_tensor=None,
-                             # input_shape=(*self.image_size, 3),
-                             pooling=None,
-                             classes=1000)
-    model_nametag ='TT'
-    
-    model = Classifier(cat = cat,
-                    config =CFG_RESNET50,
-                    name_tensorboard=model_nametag,
-                    base_model = base_model)
-    model.load_data()
-    print(model.base_model.name)
-    print(dir(model))
-
-    model = Classifier(cat = cat,
-                    config =train_config,
-                    name_tensorboard='TEST_freeze_up_to_zero_lr00005',
-                    base_model=base_model)
-    model.load_data()
-    print(model.base_model.name)
-    print(dir(model))
+    pass
 
 def main(args=None):
     import sys
@@ -282,7 +246,5 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-    # train()
     # test()
     # finetune()
-    # get_traindata_info()
