@@ -2,9 +2,9 @@
 """ 
 main.py
 
-python main.py --backbone 'densenet121' --category "milk" --save False --desc '339_cls_TEST'
+# TODO  add efficientnetb6
 
-python main.py --backbone 'densenet201' --category "by_category" --save False --desc 'by_category_added_more_data'
+python main.py --backbone 'resnet152v2' --category "by_category" --save False --desc 'WHY RES 152 not working'
 
 downloaded models :: 
 'resnet50'
@@ -15,7 +15,9 @@ downloaded models ::
 'densenet201'
 'densenet121'
 'nasnetLarge'
+'inception_resnet'
 """
+
 import argparse
 
 from configs.config import *
@@ -28,9 +30,6 @@ import numpy as np
 import pandas as pd  
 import pathlib
 import json 
-
-# csv_path = '/workspace/detect-me/product_classifier/sold60_12JUN.csv'
-
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 def parse_args(args):
@@ -45,10 +44,10 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def get_traindata_info(model):
-    train_labels = model.dataset['train'].labels
-    counts = np.unique(train_labels, return_counts=True)
-    return pd.DataFrame(counts).T
+# def get_traindata_info(model):
+#     train_labels = model.dataset['train'].labels
+#     counts = np.unique(train_labels, return_counts=True)
+#     return pd.DataFrame(counts).T
 
 
 
@@ -62,10 +61,11 @@ def train(model, cat , config, name_tag, save):
                       )
 
     print('len(base_model.layers) :\n',len(model.base_model.layers))
+    print(f'model.count_params() _ {model.base_model.count_params()}')
 
     
     model.load_data()
-    train_info = get_traindata_info(model)
+    # train_info = get_traindata_info(model)
     model.build()
     model.compile(fine_tune_at=model.fine_tune_at,
                             lr=model.lr)
@@ -73,10 +73,11 @@ def train(model, cat , config, name_tag, save):
 
     history = model.train(save=save,
                           save_name=name_tag,
-                          train_info=train_info)
+                        #   train_info=train_info
+                          )
     
 
-    
+    number_of_epochs_it_ran = len(history.history['loss'])
     #TODO save result 
     print('________________________________________________________________________')
     print('____________________eval on test set____________________________________')
@@ -91,20 +92,13 @@ def train(model, cat , config, name_tag, save):
     if not os.path.exists(p):
         os.mkdir(p)
     with open(os.path.join(p ,
-                           f'{model.base_model.name}_{name_tag}.json'),
+                           f'{model.base_model.name}_{name_tag}-(number_of_epochs_it_ran-{number_of_epochs_it_ran})-(count_params-{model.base_model.count_params()}).json'),
               'w') as writer:
         json.dump(test_r,
                   writer,
                   indent=4)
 
 def finetune():
-    # finetune = '1000-120-80'
-    # lr = '0.0001----0.00001---0.000002'
-    # epochs = '10----25'
-    # desc = 'dropout_45__24_apr_TEST'
-    # base_model = 'RESNET50'
-    # model_nametag = f'{base_model}_Finetune_{finetune}_{lr}_n_{epochs}_{desc}'
-
     model = Classifier(cat = 'milk',
                     config =CFG_RESNET,
                     name_tensorboard=model_nametag,
@@ -239,6 +233,17 @@ def main(args=None):
                             pooling=None,
                             classes=1000,
                             )
+    elif backbone=='inception_resnet':
+        train_config = CFG_INCEPTION_RES
+        base_model = tf.keras.applications.InceptionResNetV2(
+        include_top=False,
+        weights="imagenet",
+        input_tensor=None,
+        input_shape=None,
+        pooling=None,
+        classes=1000,
+        classifier_activation="softmax",)
+
     elif backbone=='vgg16':
         train_config = CFG_VGG16
         base_model = tf.keras.applications.VGG16(include_top=False,

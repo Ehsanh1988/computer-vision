@@ -23,8 +23,7 @@ CFG_RESNET50 = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data/",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 57,
+        "image_size": (224,224)
     },
     "train": {
         "batch_size": 18,
@@ -57,20 +56,19 @@ CFG_RESNET50V2 = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data/",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 57,
+        "image_size": (224,224)
     },
     "train": {
-        "batch_size": 16,
+        "batch_size": 32,
         "epochs": 30,
-        "opt_lr" : 0.0002,
+        "opt_lr" : 0.0001,
         "fine_tune_at": 0,
-        'dropout' : 0.2,
+        'dropout' : 0.0,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay', #cosine_learning_rate_decay
-                              'params' : {'warmup_epoch' : 6,
-                                          'hold_base_rate_steps' : 2} 
+                              'params' : {'warmup_epoch' : 0,
+                                          'hold_base_rate_steps' : 4} 
                              }
         },
         "metrics": [""]
@@ -103,20 +101,19 @@ CFG_RESNET152 = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data/",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 339,
+        "image_size": (224,224)
     },
     "train": {
         "batch_size": 16,
-        "epochs": 50,
-        "opt_lr" : 0.001,
-        "fine_tune_at": 350,
-        'dropout' : 0.0,
+        "epochs": 25,
+        "opt_lr" : 0.0004,
+        "fine_tune_at": 500,
+        'dropout' : 0.4,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',
-                              'params' : {'warmup_epoch' : 2,
-                                          'hold_base_rate_steps' : 1} 
+                              'params' : {'warmup_epoch' : 5,
+                                          'hold_base_rate_steps' : 2} 
                              }
         },
         "metrics": [""]
@@ -135,20 +132,19 @@ CFG_VGG16 = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 339,
+        "image_size": (224,224)
     },
     "train": {
         "batch_size": 32,
         "epochs": 50,
-        "opt_lr" : 0.0001,
-        "fine_tune_at": 7,
-        'dropout' : 0.4,
+        "opt_lr" : 0.0002,
+        "fine_tune_at": 0,
+        'dropout' : 0.0,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',
                               'params' : {'warmup_epoch' : 4,
-                                          'hold_base_rate_steps' : 0} 
+                                          'hold_base_rate_steps' : 3} 
                              }
         },
         "metrics": [""]
@@ -168,20 +164,19 @@ CFG_EfficientNet = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 339,
+        "image_size": (224,224)
     },
     "train": {
         "batch_size": 16,
         "epochs": 40,
-        "opt_lr" : 0.0044,
-        "fine_tune_at": 20,   
-        'dropout' : 0.0,
+        "opt_lr" : 0.0005,
+        "fine_tune_at": 400,   
+        'dropout' : 0.2,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
-                              'params' : {'warmup_epoch' : 8,
-                                          'hold_base_rate_steps' : 2} 
+                              'params' : {'warmup_epoch' : 0,
+                                          'hold_base_rate_steps' : 4} 
                              }
         },
         "metrics": [""]
@@ -200,15 +195,14 @@ CFG_DENSE201 = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 339,
+        "image_size": (224,224)
     },
     "train": {
         "batch_size": 16,
         "epochs": 30,
         "opt_lr" : 0.001,
-        "fine_tune_at": 200,   
-        'dropout' : 0.3,
+        "fine_tune_at": 0,   
+        'dropout' : 0.4,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
@@ -229,8 +223,7 @@ CFG_DENSE121 = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 339,
+        "image_size": (224,224)
     },
     "train": {
         "batch_size": 32,
@@ -256,8 +249,7 @@ CFG_NASNET = {
     "data": {
         "path_to_data" : "/workspace/detect-me/product_classifier/data",
         "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
-        "image_size": (224,224),
-        "num_classes": 339,
+        "image_size": (224,224)
     },
     "train": {
         "batch_size": 4,
@@ -276,5 +268,31 @@ CFG_NASNET = {
     },
     "model": {
         "name" : 'NASNetLarge'
+    }
+}
+
+CFG_INCEPTION_RES = {
+    "data": {
+        "path_to_data" : "/workspace/detect-me/product_classifier/data",
+        "path_to_model" : "/workspace/detect-me/product_classifier/saved_models/",
+        "image_size": (224,224)
+    },
+    "train": {
+        "batch_size": 16,
+        "epochs": 40,
+        "opt_lr" : 0.002,
+        "fine_tune_at": 20,   
+        'dropout' : 0.4,
+        "optimizer": {
+            "type": "adam",
+            "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
+                              'params' : {'warmup_epoch' : 4,
+                                          'hold_base_rate_steps' : 2} 
+                             }
+        },
+        "metrics": [""]
+    },
+    "model": {
+        "name" : 'INCEPTION_RES'
     }
 }

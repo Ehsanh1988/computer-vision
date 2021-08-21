@@ -32,6 +32,9 @@ from tensorflow.keras.applications.resnet_v2 import preprocess_input as preproce
 from tensorflow.keras.applications.densenet import preprocess_input as preprocess_input_densnet
 from tensorflow.keras.applications.efficientnet import preprocess_input as preprocess_input_efficientnet
 from tensorflow.keras.applications.nasnet import preprocess_input as preprocess_input_nasnet
+from tensorflow.keras.applications.vgg16 import preprocess_input as preprocess_input_vgg16
+from tensorflow.keras.applications.inception_resnet_v2 import preprocess_input as preprocess_input_inception_res_v2
+
 from keras.applications.resnet50 import ResNet50
 
 
@@ -70,7 +73,7 @@ class Classifier(BaseModel):
         self.fine_tune_at = self.config.train.fine_tune_at
 
         # data and model
-        self.num_classes = self.config.data.num_classes
+        # self.num_classes = self.config.data.num_classes
         self.image_size = self.config.data.image_size
 
         # path 
@@ -127,7 +130,8 @@ class Classifier(BaseModel):
         
         if self.base_model.name == 'resnet152v2':
             print('resnet152v2 preprocess')
-            x = preprocess_input_resnet(inputs)
+            x = preprocess_input_resnet_v2(inputs)
+            
         elif self.base_model.name  == 'resnet50':
             x = preprocess_input_resnet(inputs)
             print('resnet50 preprocess')
@@ -135,12 +139,22 @@ class Classifier(BaseModel):
         elif self.base_model.name  == 'densenet121':
             x = preprocess_input_densnet(inputs)
             print('densenet121 preprocess')
+            
         elif self.base_model.name  == 'densenet201':
             x = preprocess_input_densnet(inputs)
             print('DenseNet201 preprocess')
+            
         elif self.base_model.name  == 'nasnetLarge':
             x = preprocess_input_nasnet(inputs)
-            print('resnet50 preprocess')
+            print('nasnetLarge preprocess')
+            
+        elif self.base_model.name == 'vgg16':
+            print('resnetvgg16 preprocess')
+            x = preprocess_input_vgg16(inputs)
+            
+        elif self.base_model.name == 'inception_resnet_v2':
+            print('inception resnet preprocess')
+            x = preprocess_input_inception_res_v2(inputs)
             
         elif self.base_model.name == 'resnet50v2':
             print('resnet50v2 preprocess')
@@ -155,7 +169,7 @@ class Classifier(BaseModel):
         else:
             # x = preprocess_input_resnet(inputs)
             raise ValueError(f'hmmm {self.base_model.name} not in this list ? [resnet152v2 , resnet50 , efficientnetb7, ...]')
-            print(f'hmmm {self.base_model.name} not in this list ? [resnet152v2 , resnet50, resnet50v2, ...]')
+            # print(f'hmmm {self.base_model.name} not in this list ? [resnet152v2 , resnet50, resnet50v2, ...]')
 
 
         # use training=False as our model contains a BatchNormalization layer.
@@ -185,8 +199,7 @@ class Classifier(BaseModel):
     def compile(self, fine_tune_at : int, lr):
         self.base_model.trainable = True
 
-        num_classes = self.dataset.get('num_classes') if self.dataset.get(
-            'num_classes') else self.num_classes
+        num_classes = self.dataset.get('num_classes')
 
         for layer in self.base_model.layers[:fine_tune_at]:
             layer.trainable = False
@@ -252,7 +265,7 @@ class Classifier(BaseModel):
               save_name='no_name',
               initial_epoch=0,
               verbose=1,
-              train_info=None
+            #   train_info=None
               ):
 
         epochs = epochs if epochs else self.epochs
@@ -282,10 +295,22 @@ class Classifier(BaseModel):
             mapping = pd.DataFrame.from_dict(mapping, orient='index')
             mapping.columns = ['CODE']
             mapping.index.name = 'CLASS'
-            mapping.to_csv(DIR /'vms_code_mapping.csv')
+            mapping.to_csv(DIR /'label_mapping.csv')
             print('saved')
-            if train_info is not None:
-                train_info.to_csv(DIR /'train_info.csv')
+            
+            train_labels = self.dataset['train'].labels
+            counts = np.unique(train_labels, return_counts=True)
+            train_info = pd.DataFrame(counts).T
+            train_info.to_csv(DIR /'train_info.csv')
+            
+            # if train_info is not None:
+            #     train_info.to_csv(DIR /'train_info.csv')
+                
+    #             def get_traindata_info(model):
+    # train_labels = model.dataset['train'].labels
+    # counts = np.unique(train_labels, return_counts=True)
+    # return pd.DataFrame(counts).T
+
 
 
         return history

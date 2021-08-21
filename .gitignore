@@ -4,6 +4,9 @@ data/
 data_/
 gitclones/
 notebooks/
+notebooks copy/
+
+classifier.code-workspace
 
 **/.ipynb_checkpoints/
 **/checkpoints/
@@ -12,6 +15,7 @@ core.*
 *.csv
 *.xlsx
 *.json
+*.txt
 
 .vscode/
 !notebooks/*.ipynb
