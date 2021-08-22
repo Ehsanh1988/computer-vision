@@ -1,9 +1,9 @@
-logs/
-saved_models/
-data/
-data_/
-gitclones/
-notebooks copy/
+/logs
+/saved_models
+/data
+/data_
+/gitclones
+/notebooks
 **/__pycache__/**
 
 *.code-workspace
@@ -18,7 +18,7 @@ core.*
 *.txt
 *.pyc
 
-.vscode/
+/.vscode
 
 # /notebooks/
 # !/notebooks/*.ipynb

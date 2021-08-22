@@ -227,10 +227,10 @@ CFG_DENSE121 = {
     },
     "train": {
         "batch_size": 32,
-        "epochs": 25,
+        "epochs": 50,
         "opt_lr" : 0.001,
         "fine_tune_at": 0,   
-        'dropout' : 0.3,
+        'dropout' : 0.4,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
