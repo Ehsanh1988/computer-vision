@@ -78,7 +78,7 @@ def train(model, cat , config, name_tag, save):
     if not os.path.exists(p):
         os.mkdir(p)
     with open(os.path.join(p ,
-                           f'{model.base_model.name}_{name_tag}-(number_of_epochs_it_ran-{number_of_epochs_it_ran})-(count_params-{model.base_model.count_params()}).json'),
+                           f'{name_tag}-(number_of_epochs_it_ran-{number_of_epochs_it_ran})-(count_params-{model.base_model.count_params()}).json'),
               'w') as writer:
         json.dump(test_r,
                   writer,
