@@ -1,7 +1,7 @@
 /logs
 /saved_models
 /data
-/data_
+/data_raw
 /gitclones
 /notebooks
 **/__pycache__/**

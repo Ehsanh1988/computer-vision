@@ -89,6 +89,7 @@ class Classifier(BaseModel):
             self.path_to_data,
             target_image_size=self.image_size,
             batch_size=self.batch_size,
+            category=self.cat
             )
 
         try:
@@ -125,7 +126,7 @@ class Classifier(BaseModel):
             print('nasnetLarge preprocess')
             
         elif self.base_model.name == 'vgg16':
-            print('resnetvgg16 preprocess')
+            print('vgg16 preprocess')
             x = preprocess_input_vgg16(inputs)
             
         elif self.base_model.name == 'inception_resnet_v2':

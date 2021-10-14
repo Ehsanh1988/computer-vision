@@ -104,16 +104,16 @@ CFG_RESNET152 = {
         "image_size": (224,224)
     },
     "train": {
-        "batch_size": 16,
-        "epochs": 25,
-        "opt_lr" : 0.0004,
-        "fine_tune_at": 500,
-        'dropout' : 0.4,
+        "batch_size": 24,
+        "epochs": 50,
+        "opt_lr" : 0.0008,
+        "fine_tune_at": 20,
+        'dropout' : 0.2,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',
-                              'params' : {'warmup_epoch' : 5,
-                                          'hold_base_rate_steps' : 2} 
+                              'params' : {'warmup_epoch' : 7,
+                                          'hold_base_rate_steps' : 7} 
                              }
         },
         "metrics": [""]
@@ -137,9 +137,9 @@ CFG_VGG16 = {
     "train": {
         "batch_size": 32,
         "epochs": 50,
-        "opt_lr" : 0.0002,
+        "opt_lr" : 0.001,
         "fine_tune_at": 0,
-        'dropout' : 0.0,
+        'dropout' : 0.2,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',
@@ -170,13 +170,13 @@ CFG_EfficientNet = {
         "batch_size": 16,
         "epochs": 40,
         "opt_lr" : 0.0005,
-        "fine_tune_at": 400,   
-        'dropout' : 0.2,
+        "fine_tune_at": 0,   
+        'dropout' : 0.3,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
-                              'params' : {'warmup_epoch' : 0,
-                                          'hold_base_rate_steps' : 4} 
+                              'params' : {'warmup_epoch' : 5,
+                                          'hold_base_rate_steps' : 2} 
                              }
         },
         "metrics": [""]
@@ -199,15 +199,15 @@ CFG_DENSE201 = {
     },
     "train": {
         "batch_size": 16,
-        "epochs": 30,
-        "opt_lr" : 0.001,
-        "fine_tune_at": 0,   
-        'dropout' : 0.4,
+        "epochs": 50,
+        "opt_lr" : 0.002,
+        "fine_tune_at": 40,   
+        'dropout' : 0.0,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
-                              'params' : {'warmup_epoch' : 5,
-                                          'hold_base_rate_steps' : 2} 
+                              'params' : {'warmup_epoch' : 8,
+                                          'hold_base_rate_steps' : 5} 
                              }
         },
         "metrics": [""]
@@ -228,13 +228,13 @@ CFG_DENSE121 = {
     "train": {
         "batch_size": 32,
         "epochs": 50,
-        "opt_lr" : 0.001,
+        "opt_lr" : 0.0008,
         "fine_tune_at": 0,   
-        'dropout' : 0.4,
+        'dropout' : 0.0,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',
-                              'params' : {'warmup_epoch' : 4,
+                              'params' : {'warmup_epoch' : 5,
                                           'hold_base_rate_steps' : 2} 
                              }
         },
@@ -278,11 +278,11 @@ CFG_INCEPTION_RES = {
         "image_size": (224,224)
     },
     "train": {
-        "batch_size": 16,
-        "epochs": 40,
-        "opt_lr" : 0.002,
-        "fine_tune_at": 20,   
-        'dropout' : 0.4,
+        "batch_size": 24,
+        "epochs": 25,
+        "opt_lr" : 0.008,
+        "fine_tune_at": 400,   
+        'dropout' : 0.0,
         "optimizer": {
             "type": "adam",
             "lr_callback" : { 'type' : 'cosine_learning_rate_decay',# 'cosine_learning_rate_decay',

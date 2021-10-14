@@ -2,20 +2,29 @@
 """ 
 main.py
 
+python main.py --backbone 'resnet152v2' --category "milk" --save True --desc 'add_VMS_PREDS' --weights 'imagenet'
+
+--category ::
+'all_categories' , 'lemon_luice_and_vinegar'
+'milk'
+'sauce'
+'sausages'
+.
+.
+.
+
 # TODO  add efficientnetb6
-
-python main.py --backbone 'densenet121' --category "by_category" --save True --desc 'FREEZE_0'
-
 downloaded models :: 
+--backbone
+'vgg16'
 'resnet50'
 'resnet50v2'
 'resnet152v2'
-'efficientnetb7'
-'vgg16'
-'densenet201'
-'densenet121'
-'nasnetLarge'
 'inception_resnet'
+'efficientnetb7'
+'densenet121'
+'densenet201'
+'nasnetLarge'
 """
 
 import argparse
@@ -40,6 +49,7 @@ def parse_args(args):
     parser.add_argument('--category',     help='which category milk , yogurt .. or by_category', default='by_category', type=str)
     parser.add_argument('--save',         help='save.', default=False, type=bool)
     parser.add_argument('--desc',         help='description to save model and tensorboad logs .', default='untitled', type=str)
+    parser.add_argument('--weights',      help='weights imagenet or None', default=None, type=str, nargs='?',)
 
     return parser.parse_args(args)
 
@@ -57,6 +67,9 @@ def train(model, cat , config, name_tag, save):
     
     model.load_data()
     model.build()
+    
+    length_classes = len(model.dataset['class_indices'])
+    
     model.compile(fine_tune_at=model.fine_tune_at,
                             lr=model.lr)
     
@@ -71,6 +84,7 @@ def train(model, cat , config, name_tag, save):
     print('________________________________________________________________________')
     print('____________________eval on test set____________________________________')
     test_r = model.evaluate(model.dataset['test'])
+    test_r['length_classes'] = length_classes
     print('________________________________________________________________________')
     
 
@@ -122,16 +136,20 @@ def main(args=None):
     args = parse_args(args)
     
     backbone =      args.backbone
-    should_I_save = args.save
-    desc =          args.desc
-    cat  =          args.category                    
+    weights  =      args.weights
+    save_flag=      args.save
+    desc     =      args.desc
+    cat      =      args.category                    
 
+    if weights == None:
+        print('training from scrach - -        -    -  -- - -  -   - -')
+        print('- - -- - - - - - --- - - -- -- --------------------')
     print(backbone)
     if backbone=='resnet50':
         train_config = CFG_RESNET50
         base_model = tf.keras.applications.ResNet50(
                              include_top=False,
-                             weights="imagenet",
+                             weights=weights,
                              input_tensor=None,
                              # input_shape=(*self.image_size, 3),
                              pooling=None,
@@ -146,7 +164,7 @@ def main(args=None):
         train_config=CFG_RESNET152
         base_model = tf.keras.applications.ResNet152V2(
                         include_top=False,
-                        weights="imagenet",
+                        weights=weights,
                         input_tensor=None,
                         input_shape=None,
                         pooling=None,
@@ -156,7 +174,7 @@ def main(args=None):
         train_config = CFG_EfficientNet
         base_model = tf.keras.applications.EfficientNetB7(
                     include_top=False,
-                    weights="imagenet",
+                    weights=weights,
                     input_tensor=None,
                     input_shape=None,
                     pooling=None,
@@ -165,13 +183,13 @@ def main(args=None):
     elif backbone=='vgg16':
         train_config = CFG_VGG16
         base_model = tf.keras.applications.VGG16(include_top=False,
-                                  weights='imagenet',
+                                  weights=weights,
                                   classes=1000)
     elif backbone=='densenet201':
         train_config = CFG_DENSE201
         base_model = tf.keras.applications.DenseNet201(
                             include_top=False,
-                            weights="imagenet",
+                            weights=weights,
                             input_tensor=None,
                             input_shape=None,
                             pooling=None,
@@ -181,7 +199,7 @@ def main(args=None):
         train_config = CFG_DENSE121
         base_model = tf.keras.applications.DenseNet121(
                             include_top=False,
-                            weights="imagenet",
+                            weights=weights,
                             input_tensor=None,
                             input_shape=None,
                             pooling=None,
@@ -192,7 +210,7 @@ def main(args=None):
         base_model = tf.keras.applications.NASNetLarge(
                             input_shape=None,
                             include_top=False,
-                            weights="imagenet",
+                            weights=weights,
                             input_tensor=None,
                             pooling=None,
                             classes=1000,
@@ -201,7 +219,7 @@ def main(args=None):
         train_config = CFG_INCEPTION_RES
         base_model = tf.keras.applications.InceptionResNetV2(
         include_top=False,
-        weights="imagenet",
+        weights=weights,
         input_tensor=None,
         input_shape=None,
         pooling=None,
@@ -211,7 +229,7 @@ def main(args=None):
     elif backbone=='vgg16':
         train_config = CFG_VGG16
         base_model = tf.keras.applications.VGG16(include_top=False,
-                                  weights='imagenet',
+                                  weights=weights,
                                   classes=1000)    
     else:
         raise ValueError('saved models in ./keras folder :: efficientnetb7-vgg16-resnet152v2-resnet50-resnet50v2 ')
@@ -220,7 +238,8 @@ def main(args=None):
     lr = train_config['train']['opt_lr']
     batchs = train_config['train']['batch_size']
     optimizer = train_config['train']['optimizer']['type']
-    optimizer__callback = train_config['train']['optimizer']['lr_callback']['type']
+    
+    # optimizer__callback = train_config['train']['optimizer']['lr_callback']['type']
     
     # optimizer__callback_params = train_config['train']['optimizer']['lr_callback']['params']
     # optimizer__callback_params = '___'.join([f'{k}-{v}' for k,v in optimizer__callback_params.items()])
@@ -236,13 +255,14 @@ def main(args=None):
 
     desc = f"{desc}__{timest}"
     
-    model_nametag = f'{base_model_name}---(Freeze-{freeze_up_to})-(lr-{lr}-{optimizer})-(opt_cb-{optimizer__callback})-(epoch-{epochs})-(batch-{batchs})-(dropout-{dropout})-{desc}'
+    # model_nametag = f'{base_model_name}---(Freeze-{freeze_up_to})-(lr-{lr}-{optimizer})-(opt_cb-{optimizer__callback})-(epoch-{epochs})-(batch-{batchs})-(dropout-{dropout})-{desc}'
+    model_nametag = f'{base_model_name}---(Freeze-{freeze_up_to})-(lr-{lr}-{optimizer})-(epoch-{epochs})-(batch-{batchs})-(dropout-{dropout})-{desc}'
     
     train(base_model,
           cat,
           train_config,
           model_nametag ,
-          should_I_save )
+          save_flag )
 
 if __name__ == '__main__':
     main()
