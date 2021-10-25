@@ -2,13 +2,16 @@
 """ 
 main.py
 
-python main.py --backbone 'resnet152v2' --category "milk" --save True --desc 'add_VMS_PREDS' --weights 'imagenet'
+python main.py --backbone 'inception_resnet' --category "dough" --save True --desc 'added_1022' --weights 'imagenet'
 
 --category ::
 'all_categories' , 'lemon_luice_and_vinegar'
 'milk'
 'sauce'
 'sausages'
+'cheese'
+'dough'
+''
 .
 .
 .

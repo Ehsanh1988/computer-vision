@@ -83,24 +83,13 @@ def prepare_dataframe(dataframe:pd.DataFrame,
 
     #TODO
     if category != 'all_categories':
-#         print('<_____________________')
-#         print(df.shape)
-#         df = df[~df.filename.str.contains('DATABASE_')]
-#         print('after removing images from database (DB_)')
-#         print(df.shape)
-#         print('_____________________>')
+        print('<_____________________')
+        print(df.shape)
+        df = df[~df.filename.str.contains('DATABASE_')]
+        print('after removing images from database (DB_)')
+        print(df.shape)
+        print('_____________________>')
     
-                    
-                    
-        # ALL BILBO DATA is in finglish 
-#         if category=='milk':
-#             print('adding images from biblo team "shyr"')
-#             print("first_level=='shyr'")
-#             print(df[df.first_level=='shyr'].shape)
-#             print("first_level=='milk'")
-#             print(df[df.first_level=='milk'].shape)
-#             df = df.assign(first_level = np.where(df.first_level == 'shyr', 'milk',
-#                                                 df.first_level))
             
         df = df[df['first_level']==category]
         print(f'df.first_level == {category}')
@@ -118,11 +107,6 @@ def prepare_dataframe(dataframe:pd.DataFrame,
                 downsample_n,
                 random_state = 1)
         df = df[['filepath' , 'first_level']]
-        # TODO change here
-#         df = df.assign(first_level = np.where(df.first_level == 'milk', 'shyr',
-#                                                 df.first_level))
-#         df = df.assign(first_level = np.where(df.first_level == 'yogurt', 'mast',
-#                                                 df.first_level))
 
         df.columns = ['filepath', 'class']
         
